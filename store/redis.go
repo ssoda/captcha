@@ -1,10 +1,11 @@
 package store
 
 import (
+	"context"
 	"encoding/hex"
 	"time"
 
-	"github.com/go-redis/redis"
+	"github.com/go-redis/redis/v8"
 )
 
 // NewRedisStore create an instance of a redis store
@@ -60,9 +61,9 @@ func NewRedisClusterStoreWithCli(cli *redis.ClusterClient, expiration time.Durat
 }
 
 type clienter interface {
-	Get(key string) *redis.StringCmd
-	Set(key string, value interface{}, expiration time.Duration) *redis.StatusCmd
-	Del(keys ...string) *redis.IntCmd
+	Get(ctx context.Context, key string) *redis.StringCmd
+	Set(ctx context.Context, key string, value interface{}, expiration time.Duration) *redis.StatusCmd
+	Del(ctx context.Context, keys ...string) *redis.IntCmd
 }
 
 type redisStore struct {
@@ -83,7 +84,7 @@ func (s *redisStore) printf(format string, args ...interface{}) {
 }
 
 func (s *redisStore) Set(id string, digits []byte) {
-	cmd := s.cli.Set(s.getKey(id), hex.EncodeToString(digits), s.expiration)
+	cmd := s.cli.Set(context.Background(), s.getKey(id), hex.EncodeToString(digits), s.expiration)
 	if err := cmd.Err(); err != nil {
 		s.printf("redis execution set command error: %s", err.Error())
 	}
@@ -92,7 +93,7 @@ func (s *redisStore) Set(id string, digits []byte) {
 
 func (s *redisStore) Get(id string, clear bool) []byte {
 	key := s.getKey(id)
-	cmd := s.cli.Get(key)
+	cmd := s.cli.Get(context.Background(), key)
 	if err := cmd.Err(); err != nil {
 		if err == redis.Nil {
 			return nil
@@ -108,7 +109,7 @@ func (s *redisStore) Get(id string, clear bool) []byte {
 	}
 
 	if clear {
-		cmd := s.cli.Del(key)
+		cmd := s.cli.Del(context.Background(), key)
 		if err := cmd.Err(); err != nil {
 			s.printf("redis execution del command error: %s", err.Error())
 			return nil
