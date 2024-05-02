@@ -52,7 +52,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/LyricTian/captcha/store"
+	"github.com/ssoda/captcha/store"
 )
 
 const (
@@ -143,7 +143,7 @@ func WriteAudio(w io.Writer, id string, lang string) error {
 // The function deletes the captcha with the given id from the internal
 // storage, so that the same captcha can't be verified anymore.
 func Verify(id string, digits []byte) bool {
-	if digits == nil || len(digits) == 0 {
+	if len(digits) == 0 {
 		return false
 	}
 	reald := getStore().Get(id, true)

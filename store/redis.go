@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"time"
 
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 )
 
 // NewRedisStore create an instance of a redis store
@@ -88,7 +88,6 @@ func (s *redisStore) Set(id string, digits []byte) {
 	if err := cmd.Err(); err != nil {
 		s.printf("redis execution set command error: %s", err.Error())
 	}
-	return
 }
 
 func (s *redisStore) Get(id string, clear bool) []byte {
