@@ -9,54 +9,54 @@ import (
 )
 
 // NewRedisStore create an instance of a redis store
-func NewRedisStore(opts *redis.Options, expiration time.Duration, out Logger, prefix ...string) Store {
+func NewRedisStore(opts *redis.Options, expiration time.Duration, out Logger, prefix string) Store {
 	if opts == nil {
 		panic("options cannot be nil")
 	}
+
 	return NewRedisStoreWithCli(
 		redis.NewClient(opts),
 		expiration,
 		out,
-		prefix...,
+		prefix,
 	)
 }
 
 // NewRedisStoreWithCli create an instance of a redis store
-func NewRedisStoreWithCli(cli *redis.Client, expiration time.Duration, out Logger, prefix ...string) Store {
+func NewRedisStoreWithCli(cli *redis.Client, expiration time.Duration, out Logger, prefix string) Store {
 	store := &redisStore{
 		cli:        cli,
+		prefix:     prefix,
 		expiration: expiration,
 		out:        out,
 	}
-	if len(prefix) > 0 {
-		store.prefix = prefix[0]
-	}
+
 	return store
 }
 
 // NewRedisClusterStore create an instance of a redis cluster store
-func NewRedisClusterStore(opts *redis.ClusterOptions, expiration time.Duration, out Logger, prefix ...string) Store {
+func NewRedisClusterStore(opts *redis.ClusterOptions, expiration time.Duration, out Logger, prefix string) Store {
 	if opts == nil {
 		panic("options cannot be nil")
 	}
+
 	return NewRedisClusterStoreWithCli(
 		redis.NewClusterClient(opts),
 		expiration,
 		out,
-		prefix...,
+		prefix,
 	)
 }
 
 // NewRedisClusterStoreWithCli create an instance of a redis cluster store
-func NewRedisClusterStoreWithCli(cli *redis.ClusterClient, expiration time.Duration, out Logger, prefix ...string) Store {
+func NewRedisClusterStoreWithCli(cli *redis.ClusterClient, expiration time.Duration, out Logger, prefix string) Store {
 	store := &redisStore{
 		cli:        cli,
+		prefix:     prefix,
 		expiration: expiration,
 		out:        out,
 	}
-	if len(prefix) > 0 {
-		store.prefix = prefix[0]
-	}
+
 	return store
 }
 

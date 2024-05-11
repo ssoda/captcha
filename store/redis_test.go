@@ -11,8 +11,9 @@ import (
 )
 
 const (
-	addr = "localhost:6379"
-	db   = 15
+	addr   = "localhost:6379"
+	db     = 15
+	prefix = "captcha"
 )
 
 var (
@@ -23,7 +24,7 @@ func TestRedisSetGet(t *testing.T) {
 	s := NewRedisStore(&redis.Options{
 		Addr: addr,
 		DB:   db,
-	}, time.Second, logger)
+	}, time.Second, logger, prefix)
 	id := "captcha id"
 	d := []byte("123456")
 	s.Set(id, d)
@@ -38,7 +39,7 @@ func TestRedisGetClear(t *testing.T) {
 	s := NewRedisStore(&redis.Options{
 		Addr: addr,
 		DB:   db,
-	}, time.Second, logger)
+	}, time.Second, logger, prefix)
 	id := "captcha id"
 	d := []byte("123456")
 	s.Set(id, d)
@@ -57,7 +58,7 @@ func TestRedisGC(t *testing.T) {
 	s := NewRedisStore(&redis.Options{
 		Addr: addr,
 		DB:   db,
-	}, time.Millisecond*10, logger)
+	}, time.Millisecond*10, logger, prefix)
 	id := "captcha id"
 	d := []byte("123456")
 	s.Set(id, d)
